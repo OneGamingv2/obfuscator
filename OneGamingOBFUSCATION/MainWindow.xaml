@@ -186,7 +186,7 @@
                             <CheckBox x:Name="VirtualizeBox" Content="Real VM virtualization (Int32/bool/void + branches)" IsChecked="True" Click="LayerCheckBox_Click" />
                             <CheckBox x:Name="FlattenBox" Content="Control-flow maze" IsChecked="True" Click="LayerCheckBox_Click" />
                             <CheckBox x:Name="WeaveInstructionsBox" Content="Every-line IL weave + dense noise" IsChecked="True" Click="LayerCheckBox_Click" />
-                            <CheckBox x:Name="MultilayerBox" Content="Multilayer hardening" IsChecked="True" Click="LayerCheckBox_Click" />
+                            <CheckBox x:Name="MultilayerBox" Content="Multilayer hardening + custom methods" IsChecked="True" Click="LayerCheckBox_Click" />
                             <CheckBox x:Name="MetadataPeBox" Content="Harden metadata / PE" IsChecked="True" Click="LayerCheckBox_Click" />
                         </StackPanel>
                     </ScrollViewer>

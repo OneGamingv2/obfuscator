@@ -374,6 +374,14 @@ public static class ObfuscationEngine
 
         if (options.MultilayerHardening)
         {
+            var custom = CustomMethodProtection.Apply(module, policy, options.VirtualizeInt32Methods);
+            virtualizedMethods += custom.Virtualized;
+            diagnostics.Add(
+                $"Custom methods: constants={custom.Constants}; binops={custom.BinOps}; virtualized={custom.Virtualized}; proxies={custom.Proxies}; vm-skips: {custom.VirtualizeSkips}");
+        }
+
+        if (options.MultilayerHardening)
+        {
             var stats = MultilayerNoiseProtection.Apply(module, policy);
             diagnostics.Add($"Multilayer noise: applied={stats.Applied}/{stats.Candidates}; skips: {stats.FormatSkipSummary()}");
         }

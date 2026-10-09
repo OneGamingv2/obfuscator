@@ -24,6 +24,7 @@ A fully local, layered IL obfuscator for managed Gorilla Tag, Unity, BepInEx, an
 - Embedded resource encryption with renamed manifest metadata and a runtime `GetManifestResourceStream` resolver (`.resources` satellites left intact for ResourceManager).
 - Runtime obfuscation bootstrap with decoy types/methods and opaque module initialization state.
 - Integer constant encoding directly in IL, with multilayer MBA-style expression trees (xor/add/sub mixes) so single-key pattern matchers fail more often.
+- Custom per-build methods: real constants and integer math are moved into unique algebra helpers (add/sub/xor/and/or/mul identities, modular multiply, opaque predicates), called through proxies, then virtualized. Dense noise and the instruction weave call those helpers too, so cleanup cannot match one fixed xor template.
 - Static-call indirection through generated proxy methods, optionally chained 2–3 deep under multilayer hardening.
 - Multilayer noise: junk MBA helpers, decoy “decoders,” and identity wrappers that break single-pass cleanup heuristics.
 - Guarded method virtualization: eligible Int32/bool/void helpers (including branches) are compiled to encrypted stack-machine bytecode and executed by an embedded interpreter — original IL is removed from the method. Multilayer scrambles opcodes per build and raises size limits.

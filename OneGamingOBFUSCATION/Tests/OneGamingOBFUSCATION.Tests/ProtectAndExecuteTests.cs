@@ -45,6 +45,9 @@ public sealed class ProtectAndExecuteTests
             Assert.Contains(result.Diagnostics, line => line.StartsWith("Virtualization", StringComparison.Ordinal));
             Assert.True(result.VirtualizedMethods > 0);
             Assert.Contains(result.Diagnostics, line => line.StartsWith("Control-flow maze:", StringComparison.Ordinal));
+            var customMethods = Assert.Single(result.Diagnostics, line => line.StartsWith("Custom methods:", StringComparison.Ordinal));
+            Assert.Matches(@"constants=[1-9]|binops=[1-9]", customMethods);
+            Assert.Matches(@"virtualized=[1-9]", customMethods);
             Assert.Contains(result.Diagnostics, line => line.StartsWith("Embedded resources:", StringComparison.Ordinal));
             Assert.Contains("Lock protected outputs: False", File.ReadAllText(result.ReportPath));
 

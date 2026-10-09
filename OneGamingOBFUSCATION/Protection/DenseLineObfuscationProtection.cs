@@ -62,7 +62,7 @@ public static class DenseLineObfuscationProtection
                 if (target.OpCode == OpCodes.Nop || target.OpCode == OpCodes.Ret)
                     continue;
 
-                var noise = BuildNoise(scratch);
+                var noise = BuildNoise(method.Module, scratch);
                 for (var n = 0; n < noise.Length; n++)
                     instructions.Insert(index + n, noise[n]);
                 index += noise.Length;
@@ -74,17 +74,28 @@ public static class DenseLineObfuscationProtection
         return stats;
     }
 
-    private static Instruction[] BuildNoise(Local scratch)
+    private static Instruction[] BuildNoise(ModuleDef module, Local scratch)
     {
         var a = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
-        var k = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+        if (RandomNumberGenerator.GetInt32(2) == 0)
+        {
+            var k = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+            var xor = CustomMethodProtection.NextXor(module);
+            return
+            [
+                Instruction.Create(OpCodes.Ldc_I4, a),
+                Instruction.Create(OpCodes.Ldc_I4, k),
+                Instruction.Create(OpCodes.Call, xor),
+                Instruction.Create(OpCodes.Ldc_I4, k),
+                Instruction.Create(OpCodes.Call, xor),
+                Instruction.Create(OpCodes.Stloc, scratch)
+            ];
+        }
+
         return
         [
             Instruction.Create(OpCodes.Ldc_I4, a),
-            Instruction.Create(OpCodes.Ldc_I4, k),
-            Instruction.Create(OpCodes.Xor),
-            Instruction.Create(OpCodes.Ldc_I4, k),
-            Instruction.Create(OpCodes.Xor),
+            Instruction.Create(OpCodes.Call, CustomMethodProtection.NextMixer(module)),
             Instruction.Create(OpCodes.Stloc, scratch)
         ];
     }

@@ -44,7 +44,11 @@ public static class Int32Virtualization
     private const byte OpRetVoid = 31;
     private const int LogicalOpcodeCount = 32;
 
-    public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis policy, bool aggressive = false)
+    public static ProtectionStats Apply(
+        ModuleDef module,
+        CompatibilityAnalysis policy,
+        bool aggressive = false,
+        IReadOnlySet<MethodDef>? onlyMethods = null)
     {
         var stats = new ProtectionStats();
         var wire = ScrambleOpcodes();
@@ -52,6 +56,9 @@ public static class Int32Virtualization
 
         foreach (var method in module.GetTypes().Where(type => !type.IsGlobalModuleType).SelectMany(type => type.Methods).ToArray())
         {
+            if (onlyMethods is not null && !onlyMethods.Contains(method))
+                continue;
+
             if (!policy.IsMethodTransformationSafe(method))
             {
                 if (method.HasBody)

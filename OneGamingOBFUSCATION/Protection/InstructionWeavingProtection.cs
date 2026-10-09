@@ -94,7 +94,7 @@ public static class InstructionWeavingProtection
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Stloc, state));
 
             if (dense && scratch is not null)
-                EmitDenseNoise(method.Body.Instructions, scratch, original);
+                EmitDenseNoise(module, method.Body.Instructions, scratch, original);
 
             method.Body.Instructions.Add(original);
         }
@@ -104,45 +104,31 @@ public static class InstructionWeavingProtection
 
     /// <summary>
     /// Stack-neutral noise inserted immediately before each original instruction.
-    /// Uses MBA identity: (a ^ b) + 2*(a &amp; b) == a + b; with b=0 => a.
+    /// Calls per-build custom methods instead of an inline xor fingerprint.
     /// </summary>
-    private static void EmitDenseNoise(IList<Instruction> body, Local scratch, Instruction continueAt)
+    private static void EmitDenseNoise(ModuleDef module, IList<Instruction> body, Local scratch, Instruction continueAt)
     {
         var a = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
-        var mode = RandomNumberGenerator.GetInt32(0, 3);
-        switch (mode)
+        switch (RandomNumberGenerator.GetInt32(0, 3))
         {
             case 0:
-                // scratch = a; scratch = (scratch ^ 0) + 2*(scratch & 0) => scratch; pop via store only
                 body.Add(Instruction.Create(OpCodes.Ldc_I4, a));
-                body.Add(Instruction.Create(OpCodes.Stloc, scratch));
-                body.Add(Instruction.Create(OpCodes.Ldloc, scratch));
-                body.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                body.Add(Instruction.Create(OpCodes.Xor));
-                body.Add(Instruction.Create(OpCodes.Ldloc, scratch));
-                body.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                body.Add(Instruction.Create(OpCodes.And));
-                body.Add(Instruction.Create(OpCodes.Ldc_I4_1));
-                body.Add(Instruction.Create(OpCodes.Shl));
-                body.Add(Instruction.Create(OpCodes.Add));
+                body.Add(Instruction.Create(OpCodes.Call, CustomMethodProtection.NextMixer(module)));
                 body.Add(Instruction.Create(OpCodes.Stloc, scratch));
                 break;
             case 1:
-                // (x ^ k) ^ k == x discarded into scratch
                 var k = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+                var xor = CustomMethodProtection.NextXor(module);
                 body.Add(Instruction.Create(OpCodes.Ldc_I4, a));
                 body.Add(Instruction.Create(OpCodes.Ldc_I4, k));
-                body.Add(Instruction.Create(OpCodes.Xor));
+                body.Add(Instruction.Create(OpCodes.Call, xor));
                 body.Add(Instruction.Create(OpCodes.Ldc_I4, k));
-                body.Add(Instruction.Create(OpCodes.Xor));
+                body.Add(Instruction.Create(OpCodes.Call, xor));
                 body.Add(Instruction.Create(OpCodes.Stloc, scratch));
                 break;
             default:
-                // Opaque true branch that still lands on the real instruction
-                var left = RandomNumberGenerator.GetInt32(1, int.MaxValue);
-                body.Add(Instruction.Create(OpCodes.Ldc_I4, left));
-                body.Add(Instruction.Create(OpCodes.Ldc_I4, left));
-                body.Add(Instruction.Create(OpCodes.Ceq));
+                body.Add(Instruction.Create(OpCodes.Ldc_I4, a));
+                body.Add(Instruction.Create(OpCodes.Call, CustomMethodProtection.NextPredicate(module)));
                 body.Add(Instruction.Create(OpCodes.Brtrue, continueAt));
                 body.Add(Instruction.Create(OpCodes.Ldc_I4, RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue)));
                 body.Add(Instruction.Create(OpCodes.Stloc, scratch));
