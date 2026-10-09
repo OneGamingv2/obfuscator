@@ -5,11 +5,6 @@ using System.Text;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Encrypts embedded manifest resources, renames safe resource metadata, and
-/// rewrites in-assembly GetManifestResourceStream/Names call sites to a local
-/// runtime resolver that decrypts on demand.
-/// </summary>
 public static class EmbeddedResourceProtection
 {
     public static ProtectionStats Apply(ModuleDef module)
@@ -33,7 +28,6 @@ public static class EmbeddedResourceProtection
                 continue;
             }
 
-            // ResourceManager satellites need stable *.resources names and plaintext layouts.
             if (originalName.EndsWith(".resources", StringComparison.OrdinalIgnoreCase) ||
                 originalName.EndsWith(".resource", StringComparison.OrdinalIgnoreCase))
             {

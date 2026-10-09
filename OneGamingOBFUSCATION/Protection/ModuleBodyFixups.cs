@@ -4,11 +4,6 @@ using dnlib.DotNet.Writer;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Ensures MaxStack and branch forms stay valid after heavy IL expansion.
-/// Uses KeepOldMaxStack with a raised ceiling so dnlib does not abort the write
-/// when a transform produces stack-ambiguous but runtime-valid Mono IL.
-/// </summary>
 public static class ModuleBodyFixups
 {
     public static void RecalculateBodies(ModuleDef module)
@@ -22,10 +17,7 @@ public static class ModuleBodyFixups
                 body.OptimizeBranches();
                 body.UpdateInstructionOffsets();
             }
-            catch
-            {
-                // Keep the body as-is if branch optimization fails after transforms.
-            }
+            catch { }
 
             var estimated = ComputeMaxStack(body);
             body.MaxStack = (ushort)Math.Min(ushort.MaxValue, Math.Max(body.MaxStack, estimated));
@@ -41,8 +33,6 @@ public static class ModuleBodyFixups
 
     private static int ComputeMaxStack(CilBody body)
     {
-        // Generous ceiling after weave/string/proxy expansion. Prefer oversize to
-        // InvalidProgramException / writer abort from an undersized MaxStack.
         var pushes = 0;
         foreach (var instruction in body.Instructions)
         {

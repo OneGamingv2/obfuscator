@@ -32,11 +32,6 @@ public sealed record UnlockResult(
     string ClearSha256,
     bool UsedMasterPassword);
 
-/// <summary>
-/// AES-GCM at-rest locks for protected assemblies.
-/// Master (system) password unlocks any file via the vault.
-/// Each file also gets a unique password that unlocks only that file.
-/// </summary>
 public static class FileLockProtection
 {
     public const string LockedExtension = ".oglock";

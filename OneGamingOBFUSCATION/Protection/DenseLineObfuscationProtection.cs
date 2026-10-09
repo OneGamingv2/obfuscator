@@ -4,11 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Second-pass densifier: for straight-line methods the weave skip (or already-woven
-/// bodies under size cap), inject stack-neutral junk before as many IL ops as possible.
-/// Does not detect dumpers or enforce single-use — loader-safe IL noise only.
-/// </summary>
 public static class DenseLineObfuscationProtection
 {
     public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis policy)
@@ -54,7 +49,7 @@ public static class DenseLineObfuscationProtection
             var inserted = 0;
             for (var index = 0; index < instructions.Count; index++)
             {
-                // Skip if this looks like already-dense weave prologue adjacent noise saturation
+
                 if (inserted > 500)
                     break;
 

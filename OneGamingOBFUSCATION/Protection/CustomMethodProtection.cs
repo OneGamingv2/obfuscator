@@ -12,11 +12,6 @@ public readonly record struct CustomMethodResult(
     int Proxies,
     string VirtualizeSkips);
 
-/// <summary>
-/// Per-build custom methods. Constants and integer math are rewritten into
-/// unique algebra helpers (not a fixed xor template), hidden behind proxies,
-/// then virtualized. Noise passes call the same kind of helpers.
-/// </summary>
 public static class CustomMethodProtection
 {
     private const int MaxConstantsPerMethod = 8;
@@ -277,7 +272,6 @@ public static class CustomMethodProtection
         var fake = unchecked(value ^ RandomNumberGenerator.GetInt32(1, int.MaxValue));
         var body = method.Body.Instructions;
 
-        // (seed | 1)^2 is always odd, so this branch is always taken.
         body.Add(Instruction.CreateLdcI4(seed));
         body.Add(Instruction.Create(OpCodes.Ldc_I4_1));
         body.Add(Instruction.Create(OpCodes.Or));
@@ -459,7 +453,7 @@ public static class CustomMethodProtection
 
     private static void EmitMixerMba(IList<Instruction> body, int key)
     {
-        // ((x ^ k) + 2*(x & k)) - k == x
+
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.CreateLdcI4(key));
         body.Add(Instruction.Create(OpCodes.Xor));
@@ -501,7 +495,7 @@ public static class CustomMethodProtection
 
     private static void EmitAddNeg(IList<Instruction> body, int key)
     {
-        // ~(~a - b) == a + b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Not));
@@ -512,7 +506,7 @@ public static class CustomMethodProtection
 
     private static void EmitSubNeg(IList<Instruction> body, int key)
     {
-        // a + (~b + 1) == a - b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -524,7 +518,7 @@ public static class CustomMethodProtection
 
     private static void EmitSubXor(IList<Instruction> body, int key)
     {
-        // (a ^ ~b) - 2*(~a & ~b) is not used; (a + k) - (b + k) == a - b
+
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.CreateLdcI4(key));
         body.Add(Instruction.Create(OpCodes.Add));
@@ -536,7 +530,7 @@ public static class CustomMethodProtection
 
     private static void EmitXorOrAnd(IList<Instruction> body, int key)
     {
-        // (a | b) - (a & b) == a ^ b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -549,7 +543,7 @@ public static class CustomMethodProtection
 
     private static void EmitXorAndNot(IList<Instruction> body, int key)
     {
-        // (a & ~b) | (~a & b) == a ^ b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -564,7 +558,7 @@ public static class CustomMethodProtection
 
     private static void EmitAndDemorgan(IList<Instruction> body, int key)
     {
-        // ~(~a | ~b) == a & b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Not));
@@ -576,7 +570,7 @@ public static class CustomMethodProtection
 
     private static void EmitOrAdd(IList<Instruction> body, int key)
     {
-        // (a & b) + (a ^ b) == a | b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -589,7 +583,7 @@ public static class CustomMethodProtection
 
     private static void EmitOrDemorgan(IList<Instruction> body, int key)
     {
-        // ~(~a & ~b) == a | b
+
         _ = key;
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.Create(OpCodes.Not));
@@ -601,7 +595,7 @@ public static class CustomMethodProtection
 
     private static void EmitMulSplit(IList<Instruction> body, int key)
     {
-        // (a + k) * b - k * b == a * b
+
         body.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Add(Instruction.CreateLdcI4(key));
         body.Add(Instruction.Create(OpCodes.Add));

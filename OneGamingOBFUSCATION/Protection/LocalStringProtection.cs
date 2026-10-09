@@ -5,10 +5,6 @@ using System.Text;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Encrypts ldstr payloads as runtime-decoded byte arrays.
-/// Multilayer mode uses multi-round XOR and a pool of decoder methods.
-/// </summary>
 public static class LocalStringProtection
 {
     public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis? policy = null, bool multilayer = false)

@@ -4,11 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Wraps every eligible IL instruction with state guards and (in dense mode)
-/// stack-neutral MBA noise so decompilers see a wall of junk per original line.
-/// Branching / exception / Unity-sensitive methods stay skipped for loader safety.
-/// </summary>
 public static class InstructionWeavingProtection
 {
     public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis policy, bool dense = false)
@@ -43,8 +38,6 @@ public static class InstructionWeavingProtection
                 continue;
             }
 
-            // Branching weave remaps targets and frequently produces stack-ambiguous IL.
-            // Leave branching helpers to control-flow flattening.
             if (originals.Any(IsBranch))
             {
                 stats.Skip("branching-body");
@@ -82,7 +75,6 @@ public static class InstructionWeavingProtection
             var key = RandomNumberGenerator.GetInt32(1, int.MaxValue);
             current ^= key;
 
-            // Per-instruction state gate
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldloc, state));
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Ldc_I4, key));
             method.Body.Instructions.Add(Instruction.Create(OpCodes.Xor));
@@ -102,10 +94,6 @@ public static class InstructionWeavingProtection
         return originals.Length;
     }
 
-    /// <summary>
-    /// Stack-neutral noise inserted immediately before each original instruction.
-    /// Calls per-build custom methods instead of an inline xor fingerprint.
-    /// </summary>
     private static void EmitDenseNoise(ModuleDef module, IList<Instruction> body, Local scratch, Instruction continueAt)
     {
         var a = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);

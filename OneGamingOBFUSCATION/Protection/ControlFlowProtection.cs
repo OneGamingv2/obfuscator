@@ -4,10 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Full control-flow maze: scrambled state dispatch, trap rooms, and
-/// identity-keyed transitions for eligible helper methods.
-/// </summary>
 public static class ControlFlowProtection
 {
     public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis policy)
@@ -98,7 +94,6 @@ public static class ControlFlowProtection
         var totalRooms = blocks.Count + trapCount;
         int Encode(int dense) => dense ^ xorKey;
 
-        // Shuffle the dispatch order so room index != case order.
         var order = Enumerable.Range(0, totalRooms).ToArray();
         for (var i = order.Length - 1; i > 0; i--)
         {
@@ -129,7 +124,6 @@ public static class ControlFlowProtection
         };
         AppendFallbackReturn(method, body);
 
-        // Emit cases in shuffled order; map each case back to a room.
         for (var caseIndex = 0; caseIndex < totalRooms; caseIndex++)
         {
             var room = order[caseIndex];

@@ -5,12 +5,6 @@ using System.Text;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Converts <c>const string</c> fields (e.g. BepInEx GUID/Name/Version) into
-/// encrypted static fields initialized at runtime. Custom attribute blobs that
-/// already inlined the same literals (like [BepInPlugin(...)]) are left intact
-/// so loaders keep working, while dnSpy no longer shows a readable const.
-/// </summary>
 public static class ConstantStringFieldProtection
 {
     public static ProtectionStats Apply(ModuleDef module)
@@ -45,7 +39,6 @@ public static class ConstantStringFieldProtection
                     continue;
                 }
 
-                // Strip literal metadata so dnSpy cannot display = "..."
                 field.Attributes = (field.Attributes & ~(FieldAttributes.Literal | FieldAttributes.HasDefault))
                                    | FieldAttributes.Static;
                 field.Constant = null;
@@ -67,7 +60,7 @@ public static class ConstantStringFieldProtection
                 module.GlobalType.Methods.Contains(cctor) &&
                 !module.GlobalType.Fields.Any())
             {
-                // leave empty cctor; other passes may use it
+
             }
         }
 

@@ -4,10 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Extra multilayer noise: decoy decoders, junk arithmetic helpers, and
-/// second-pass indirection meant to break single-pass deobfuscator patterns.
-/// </summary>
 public static class MultilayerNoiseProtection
 {
     public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis policy)
@@ -34,7 +30,7 @@ public static class MultilayerNoiseProtection
             {
                 Body = new CilBody()
             };
-            // (a ^ b) + (a & b) * 2 == a + b, but looks non-trivial
+
             var body = method.Body.Instructions;
             body.Add(Instruction.Create(OpCodes.Ldarg_0));
             body.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -67,7 +63,7 @@ public static class MultilayerNoiseProtection
             {
                 Body = new CilBody()
             };
-            // Looks like a decoder but returns empty / wrong — never referenced by real call sites.
+
             var encodingType = new TypeRefUser(module, "System.Text", "Encoding", module.CorLibTypes.AssemblyRef);
             var getUtf8 = new MemberRefUser(module, "get_UTF8", MethodSig.CreateStatic(encodingType.ToTypeSig()), encodingType);
             var getString = new MemberRefUser(module, "GetString", MethodSig.CreateInstance(module.CorLibTypes.String, byteArray), encodingType);
@@ -86,7 +82,7 @@ public static class MultilayerNoiseProtection
     {
         var cctor = EnsureStaticConstructor(module.GlobalType);
         var insertAt = Math.Max(0, cctor.Body.Instructions.Count - 1);
-        // Opaque-false path keeps junk helpers + decoy decoders referenced in metadata.
+
         if (junkHelpers.Count > 0)
         {
             var helper = junkHelpers[RandomNumberGenerator.GetInt32(junkHelpers.Count)];
@@ -130,7 +126,6 @@ public static class MultilayerNoiseProtection
             if (method.Body.Instructions.Count > 250 || method.Body.HasExceptionHandlers)
                 continue;
 
-            // Wrap a random ldc.i4 with a junk helper identity: helper(x,0) == x when using (a^b)+2*(a&b) with b=0 => a
             method.Body.SimplifyBranches();
             var instructions = method.Body.Instructions;
             for (var index = 0; index < instructions.Count; index++)

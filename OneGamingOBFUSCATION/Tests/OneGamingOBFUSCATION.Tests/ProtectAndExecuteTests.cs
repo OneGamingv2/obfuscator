@@ -162,7 +162,7 @@ public sealed class ProtectAndExecuteTests
         }
         catch
         {
-            // Best-effort cleanup for locked collectible contexts.
+
         }
     }
 }

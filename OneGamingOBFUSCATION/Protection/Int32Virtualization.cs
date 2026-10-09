@@ -4,10 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Real stack-machine virtualization for eligible Int32/bool/void helpers.
-/// Original IL is replaced by encrypted VM bytecode + an embedded interpreter.
-/// </summary>
 public static class Int32Virtualization
 {
     private const byte OpLoadArgument = 0;
@@ -534,7 +530,6 @@ public static class Int32Virtualization
         body.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         body.Add(Instruction.Create(OpCodes.Ret));
 
-        // LoadArg
         body.Add(cases[OpLoadArgument]);
         PushSlot(body, stack, sp);
         body.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -547,7 +542,6 @@ public static class Int32Virtualization
         Inc(body, pc, 1);
         body.Add(Instruction.Create(OpCodes.Br, loop));
 
-        // LoadConst
         body.Add(cases[OpLoadConstant]);
         PushSlot(body, stack, sp);
         body.Add(Instruction.Create(OpCodes.Ldloc, code));

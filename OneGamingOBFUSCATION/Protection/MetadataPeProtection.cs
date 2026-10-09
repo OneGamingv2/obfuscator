@@ -15,10 +15,6 @@ public sealed record MetadataPeResult(
     string ModuleName,
     string Mvid);
 
-/// <summary>
-/// Applies valid CLR metadata and PE variations without corrupting tables,
-/// signatures, section layout, or loader-critical headers.
-/// </summary>
 public static class MetadataPeProtection
 {
     public static MetadataPeResult Apply(ModuleDef module)
@@ -107,8 +103,7 @@ public static class MetadataPeProtection
 
     private static int RenamePublicManifestResourceMetadata(ModuleDef module)
     {
-        // Resources already handled by EmbeddedResourceProtection keep their names.
-        // Here we only normalize ManifestResource visibility flags where safe.
+
         var count = 0;
         foreach (var resource in module.Resources)
         {

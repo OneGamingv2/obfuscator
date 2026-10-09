@@ -47,7 +47,6 @@ public static class CallProxyProtection
                 continue;
             }
 
-            // Do not re-proxy methods that are already thin proxies on <Module>.
             if (method.DeclaringType.IsGlobalModuleType)
                 continue;
 

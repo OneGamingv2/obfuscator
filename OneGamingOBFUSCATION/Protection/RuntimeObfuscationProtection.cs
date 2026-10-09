@@ -4,10 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Injects runtime noise: decoy types/methods and a module bootstrap that
-/// materializes opaque runtime state used by other local protections.
-/// </summary>
 public static class RuntimeObfuscationProtection
 {
     public static ProtectionStats Apply(ModuleDef module)
@@ -54,8 +50,7 @@ public static class RuntimeObfuscationProtection
                     new FieldSig(module.CorLibTypes.String),
                     FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.InitOnly);
                 type.Fields.Add(field);
-                // Store as encrypted-looking static assigned in module cctor later via ldstr decoy
-                // Use literal constant so metadata search finds many GUID-like hits.
+
                 field.Attributes = FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.Literal |
                                    FieldAttributes.HasDefault;
                 field.Constant = new ConstantUser(value);
@@ -147,7 +142,6 @@ public static class RuntimeObfuscationProtection
             Instruction.Create(OpCodes.Stsfld, stateField)
         };
 
-        // Opaque live call into one decoy so the type is not tree-shaken and looks "used".
         if (decoys.Count > 0)
         {
             var decoy = decoys[RandomNumberGenerator.GetInt32(decoys.Count)];

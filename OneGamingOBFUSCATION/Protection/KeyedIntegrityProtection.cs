@@ -27,9 +27,6 @@ public static class KeyedIntegrityProtection
             throw new ArgumentException($"Protection key must contain at least {MinimumKeyLength} characters.", nameof(protectionKey));
     }
 
-    /// <summary>
-    /// Creates a local-only random protection key suitable for PBKDF2/HMAC manifests.
-    /// </summary>
     public static string GenerateProtectionKey(int length = 32)
     {
         if (length < MinimumKeyLength)

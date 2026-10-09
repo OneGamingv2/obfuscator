@@ -53,8 +53,7 @@ public sealed class CompatibilityAnalysis
 
     public bool ShouldPreserve(FieldDef field)
     {
-        // const/literal string fields are eligible for rename + runtime encoding.
-        // Enum literals stay preserved. Reflection string hits still preserve names.
+
         var preserve = (!AggressiveRenaming && !field.IsPrivate) || field.IsSpecialName ||
                        field.DeclaringType.IsEnum || GorillaTagCompatibilityPolicy.HasNameSensitiveAttribute(field) ||
                        _literalNames.Contains(field.Name);

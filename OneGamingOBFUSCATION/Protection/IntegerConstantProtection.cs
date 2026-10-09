@@ -4,10 +4,6 @@ using System.Security.Cryptography;
 
 namespace OneGamingOBFUSCATION.Protection;
 
-/// <summary>
-/// Encodes integer constants with randomized multi-op expression trees
-/// so simple single xor-key pattern matchers fail.
-/// </summary>
 public static class IntegerConstantProtection
 {
     public static ProtectionStats Apply(ModuleDef module, CompatibilityAnalysis policy, bool multilayer = false)
@@ -82,7 +78,7 @@ public static class IntegerConstantProtection
             }
             default:
             {
-                // ((value - k1) ^ k2) ^ k2 + k1
+
                 var k1 = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
                 var k2 = RandomNumberGenerator.GetInt32(1, int.MaxValue);
                 instructions[index].OpCode = OpCodes.Ldc_I4;

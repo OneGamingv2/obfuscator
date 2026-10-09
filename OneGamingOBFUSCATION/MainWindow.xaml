@@ -34,7 +34,7 @@
     </Window.Resources>
 
     <Grid>
-        <!-- Atmosphere: cool gradient + faint diagonal hatch -->
+
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Color="#E8EEF2" Offset="0" />
@@ -68,7 +68,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Brand -->
                 <Grid Grid.Row="0" Margin="0,0,0,22">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -90,7 +89,6 @@
 
                 <Rectangle Grid.Row="1" Height="1" Fill="{StaticResource LineBrush}" Margin="0,0,0,20" />
 
-                <!-- Workspace -->
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1.15*" />
@@ -98,7 +96,6 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- Paths + key -->
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock Text="SOURCE" Style="{StaticResource SectionLabel}" />
@@ -156,7 +153,6 @@
 
                     <Rectangle Grid.Column="1" Width="1" HorizontalAlignment="Center" Fill="{StaticResource LineBrush}" />
 
-                    <!-- Layers -->
                     <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock Text="PRESET" Style="{StaticResource SectionLabel}" />
@@ -195,7 +191,6 @@
                 <ProgressBar x:Name="WorkProgress" Grid.Row="3" Margin="0,16,0,8" Minimum="0" Maximum="100"
                              Value="0" Visibility="Collapsed" IsIndeterminate="True" />
 
-                <!-- Activity -->
                 <Grid Grid.Row="4" Margin="0,4,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

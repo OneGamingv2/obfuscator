@@ -187,7 +187,7 @@ public static class ObfuscationEngine
         var copiedFiles = 0;
         var skippedDevelopmentFiles = 0;
         Directory.CreateDirectory(output);
-        // Fresh vault/password export for this batch when locking.
+
         if (options.LockOutputs)
         {
             var vaultPath = Path.Combine(output, FileLockProtection.VaultFileName);
@@ -400,7 +400,6 @@ public static class ObfuscationEngine
             diagnostics.Add($"Control-flow maze: applied={stats.Applied}/{stats.Candidates}; skips: {stats.FormatSkipSummary()}");
         }
 
-        // Dense per-line noise first (multilayer), then weave every eligible instruction.
         if (options.WeaveInstructions && options.MultilayerHardening)
         {
             var denseStats = DenseLineObfuscationProtection.Apply(module, policy);
@@ -416,7 +415,6 @@ public static class ObfuscationEngine
             diagnostics.Add($"Instruction weave (dense={dense}): applied={stats.Applied} instructions; skips: {stats.FormatSkipSummary()}");
         }
 
-        // Runtime decoys last so the maze never rewrites bootstrap helpers the module .cctor calls.
         if (options.RuntimeObfuscation)
         {
             var stats = RuntimeObfuscationProtection.Apply(module);
