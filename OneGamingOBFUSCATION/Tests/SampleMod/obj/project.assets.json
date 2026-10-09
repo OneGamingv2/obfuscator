@@ -188,11 +188,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+      "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
       "projectName": "SampleMod",
-      "projectPath": "C:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+      "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
       "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\obj\\",
+      "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [

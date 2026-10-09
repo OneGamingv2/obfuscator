@@ -9,3 +9,15 @@ C:\Users\MJB\OneDrive\Documents\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\
 C:\Users\MJB\OneDrive\Documents\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\refint\SampleMod.dll
 C:\Users\MJB\OneDrive\Documents\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.pdb
 C:\Users\MJB\OneDrive\Documents\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\ref\SampleMod.dll
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\bin\Release\net8.0\SampleMod.deps.json
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\bin\Release\net8.0\SampleMod.dll
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\bin\Release\net8.0\SampleMod.pdb
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.GeneratedMSBuildEditorConfig.editorconfig
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.AssemblyInfoInputs.cache
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.AssemblyInfo.cs
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.csproj.CoreCompileInputs.cache
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.sourcelink.json
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.dll
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\refint\SampleMod.dll
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\SampleMod.pdb
+e:\OLD DOCUMENTS\obfuscator\OneGamingOBFUSCATION\Tests\SampleMod\obj\Release\net8.0\ref\SampleMod.dll

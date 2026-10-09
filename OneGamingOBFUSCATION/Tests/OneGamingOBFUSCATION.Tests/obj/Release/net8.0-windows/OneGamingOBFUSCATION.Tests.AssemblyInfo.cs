@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OneGamingOBFUSCATION.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d2d0088550263a83f9d88d4b36c2fd628405022")]
 [assembly: System.Reflection.AssemblyProductAttribute("OneGamingOBFUSCATION.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OneGamingOBFUSCATION.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

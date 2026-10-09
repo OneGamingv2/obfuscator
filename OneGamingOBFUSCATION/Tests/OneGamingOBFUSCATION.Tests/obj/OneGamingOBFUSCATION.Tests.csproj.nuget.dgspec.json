@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj": {}
+    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj": {}
   },
   "projects": {
-    "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
+    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
       "version": "8.6.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
+        "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
         "projectName": "OneGamingOBFUSCATION",
-        "projectPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
+        "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
         "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\obj\\",
+        "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -120,14 +120,14 @@
         }
       }
     },
-    "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj": {
+    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
+        "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
         "projectName": "OneGamingOBFUSCATION.Tests",
-        "projectPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
+        "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
         "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\obj\\",
+        "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -149,11 +149,11 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
-                "projectPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj"
+              "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
+                "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj"
               },
-              "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
-                "projectPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj"
+              "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
+                "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj"
               }
             }
           }
@@ -226,14 +226,14 @@
         }
       }
     },
-    "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
+    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+        "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
         "projectName": "SampleMod",
-        "projectPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+        "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
         "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\MJB\\OneDrive\\Documents\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\obj\\",
+        "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
