@@ -234,7 +234,7 @@ public static class Cli
                     [--rename true|false] [--rename-types true|false] [--aggressive true|false]
                     [--metadata true|false] [--multilayer true|false] [--lock true|false]
 
-            unlock  --input <file.oglock> [--output <file.dll>] (--key <master-or-file-password> | --key-env <VAR>)
+            unlock  --input <file.oglock> [--output <file.dll-or-exe>] (--key <master-or-file-password> | --key-env <VAR>)
                     [--vault <OneGaming.unlock-vault.json>]
 
             list-passwords --vault <OneGaming.unlock-vault.json> (--key <master> | --key-env <VAR>)

@@ -78,19 +78,17 @@ Virtualization and control-flow flattening are limited to eligible private helpe
 ## GUI use
 
 1. Open `OneGamingOBFUSCATION.exe`.
-2. Drop a managed mod DLL onto the window, or choose **Folder** to protect a complete mod package.
+2. Drop one managed DLL or EXE onto the window, or choose **Browse**. The output keeps the same extension.
 3. Enter a strong protection key of at least 16 characters and store it securely.
 4. Pick a preset (**Safe**, **Maximum**, or **Rename only**) or customize layers.
-5. Keep **Protect every managed file in the folder** enabled to process the whole plugin directory (DLL/EXE/netmodule + hashed asset metadata).
-6. Choose a new output path and select **Protect locally**.
-7. Folder mode recursively protects every compatible unsigned managed assembly, copies non-managed assets (with SHA-256 in the batch report), and excludes source/debug/`bin`/`obj` artifacts.
-8. Test the protected mod in a private development environment before distribution.
+5. Choose a new output path and select **Protect**.
+6. Test the protected file in a private development environment before distribution.
 
 ## CLI use
 
 ```text
 OneGamingOBFUSCATION.exe protect --input Mod.dll --output Mod_Protected.dll --key "your-16+-char-key"
-OneGamingOBFUSCATION.exe protect --input ModFolder --output ModFolder_Protected --key-env ONEGAMING_KEY --preset safe
+OneGamingOBFUSCATION.exe protect --input Tool.exe --output Tool_Protected.exe --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe unlock --input Mod_Protected.dll.oglock --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe list-passwords --vault OneGaming.unlock-vault.json --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe verify --input Mod_Protected.dll --key "your-16+-char-key"

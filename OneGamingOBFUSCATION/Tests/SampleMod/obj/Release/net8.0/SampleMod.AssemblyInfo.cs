@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SampleMod")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3c8cd2fb8dea171e6da98494b9e17053080a04ef")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32a99d977d39c376fd16aae6adff8771f6cae806")]
 [assembly: System.Reflection.AssemblyProductAttribute("SampleMod")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SampleMod")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

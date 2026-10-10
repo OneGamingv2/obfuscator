@@ -1,4 +1,5 @@
 using dnlib.DotNet;
+using dnlib.DotNet.Emit;
 using OneGamingOBFUSCATION.Core;
 using OneGamingOBFUSCATION.Protection;
 using System.IO;
@@ -184,6 +185,61 @@ public sealed class ProtectAndExecuteTests
         {
             TryDeleteDirectory(outputDirectory);
         }
+    }
+
+    [Fact]
+    public void Protect_keeps_managed_exe_kind_and_entry_point()
+    {
+        var outputDirectory = Path.Combine(Path.GetTempPath(), "OneGamingOBFUSCATION.Tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(outputDirectory);
+        var input = Path.Combine(outputDirectory, "tool.exe");
+        var output = Path.Combine(outputDirectory, "tool_OneGamingProtected.exe");
+
+        try
+        {
+            WriteConsoleExe(input);
+            var options = ObfuscationOptions.RenameOnly with { AllowOverwrite = true };
+            ObfuscationEngine.Protect(input, output, options, ProtectionKey);
+
+            Assert.True(File.Exists(output));
+            Assert.Equal(".exe", Path.GetExtension(output), ignoreCase: true);
+            using var protectedModule = ModuleDefMD.Load(output, new ModuleCreationOptions(CLRRuntimeReaderKind.Mono));
+            Assert.Equal(ModuleKind.Console, protectedModule.Kind);
+            Assert.NotNull(protectedModule.EntryPoint);
+            Assert.True(protectedModule.EntryPoint.IsStatic);
+        }
+        finally
+        {
+            TryDeleteDirectory(outputDirectory);
+        }
+    }
+
+    private static void WriteConsoleExe(string path)
+    {
+        var module = new ModuleDefUser("tool.exe")
+        {
+            Kind = ModuleKind.Console,
+            RuntimeVersion = "v4.0.30319"
+        };
+        var assembly = new AssemblyDefUser("tool", new Version(1, 0, 0, 0));
+        assembly.Modules.Add(module);
+        var program = new TypeDefUser("Program", module.CorLibTypes.Object.TypeDefOrRef)
+        {
+            Attributes = dnlib.DotNet.TypeAttributes.Public | dnlib.DotNet.TypeAttributes.Abstract | dnlib.DotNet.TypeAttributes.Sealed | dnlib.DotNet.TypeAttributes.BeforeFieldInit
+        };
+        module.Types.Add(program);
+        var main = new MethodDefUser(
+            "Main",
+            MethodSig.CreateStatic(module.CorLibTypes.Void),
+            dnlib.DotNet.MethodImplAttributes.IL | dnlib.DotNet.MethodImplAttributes.Managed,
+            dnlib.DotNet.MethodAttributes.Public | dnlib.DotNet.MethodAttributes.Static | dnlib.DotNet.MethodAttributes.HideBySig)
+        {
+            Body = new CilBody()
+        };
+        main.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+        program.Methods.Add(main);
+        module.EntryPoint = main;
+        module.Write(path);
     }
 
     private static void TryDeleteDirectory(string path)

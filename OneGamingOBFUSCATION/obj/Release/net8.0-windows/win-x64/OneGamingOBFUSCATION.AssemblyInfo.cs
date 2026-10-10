@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("Keyed, fully local IL, metadata, and PE protection with integrity verification fo" +
     "r managed Unity mods."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("8.6.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("8.6.0+3c8cd2fb8dea171e6da98494b9e17053080a04ef")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("8.6.0+32a99d977d39c376fd16aae6adff8771f6cae806")]
 [assembly: System.Reflection.AssemblyProductAttribute("OneGamingOBFUSCATION")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OneGamingOBFUSCATION")]
 [assembly: System.Reflection.AssemblyVersionAttribute("8.6.0.0")]

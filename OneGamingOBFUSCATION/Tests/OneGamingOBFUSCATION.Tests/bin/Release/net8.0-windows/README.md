@@ -78,7 +78,7 @@ Virtualization and control-flow flattening are limited to eligible private helpe
 ## GUI use
 
 1. Open `OneGamingOBFUSCATION.exe`.
-2. Drop a managed mod DLL onto the window, or choose **Folder** to protect a complete mod package.
+2. Drop a managed DLL or EXE onto the window, or choose **Folder** to protect a complete mod package. The output keeps the same extension.
 3. Enter a strong protection key of at least 16 characters and store it securely.
 4. Pick a preset (**Safe**, **Maximum**, or **Rename only**) or customize layers.
 5. Keep **Protect every managed file in the folder** enabled to process the whole plugin directory (DLL/EXE/netmodule + hashed asset metadata).

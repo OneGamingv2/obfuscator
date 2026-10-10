@@ -4,6 +4,7 @@ using OneGamingOBFUSCATION.Protection;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace OneGamingOBFUSCATION;
 
@@ -15,22 +16,45 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Log("Ready. No files or data leave this computer.");
+        Log("Ready. One DLL or EXE at a time.");
         Log("CLI: OneGamingOBFUSCATION.exe protect --input <path> --key <key>");
+        StateChanged += (_, _) => SyncChrome();
     }
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (Resources["IntroMotion"] is System.Windows.Media.Animation.Storyboard intro)
-            intro.Begin(this);
+        if (e.ChangedButton != MouseButton.Left)
+            return;
+        if (e.ClickCount == 2)
+        {
+            ToggleMaximize();
+            return;
+        }
+
+        DragMove();
+    }
+
+    private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void Maximize_Click(object sender, RoutedEventArgs e) => ToggleMaximize();
+
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void ToggleMaximize() =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void SyncChrome()
+    {
+        ChromeInset.Margin = WindowState == WindowState.Maximized ? new Thickness(7) : new Thickness(0);
+        MaxGlyph.Text = WindowState == WindowState.Maximized ? "\uE923" : "\uE922";
     }
 
     private void BrowseInput_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Choose a managed Gorilla Tag mod",
-            Filter = "Managed assemblies (*.dll;*.exe)|*.dll;*.exe|All files (*.*)|*.*",
+            Title = "Choose a managed DLL or EXE",
+            Filter = "DLL and EXE (*.dll;*.exe)|*.dll;*.exe|Executable (*.exe)|*.exe|Library (*.dll)|*.dll",
             CheckFileExists = true
         };
 
@@ -38,40 +62,20 @@ public partial class MainWindow : Window
             SetInput(dialog.FileName);
     }
 
-    private void BrowseFolder_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new OpenFolderDialog
-        {
-            Title = "Choose a mod folder (all compatible managed assemblies will be protected)",
-            Multiselect = false
-        };
-
-        if (dialog.ShowDialog(this) == true)
-            SetInput(dialog.FolderName);
-    }
-
     private void BrowseOutput_Click(object sender, RoutedEventArgs e)
     {
         var input = InputPathBox.Text.Trim();
-        if (Directory.Exists(input))
-        {
-            var defaultOutput = ObfuscationEngine.CreateDefaultOutputPath(input);
-            var folderDialog = new OpenFolderDialog
-            {
-                Title = "Choose the parent folder for the new protected package",
-                Multiselect = false
-            };
-            if (folderDialog.ShowDialog(this) == true)
-                OutputPathBox.Text = Path.Combine(folderDialog.FolderName, Path.GetFileName(defaultOutput));
-            return;
-        }
-
+        var extension = Path.GetExtension(input);
+        var isExe = extension.Equals(".exe", StringComparison.OrdinalIgnoreCase);
         var dialog = new SaveFileDialog
         {
             Title = "Choose a new output file",
-            Filter = "Managed assembly (*.dll)|*.dll|Executable (*.exe)|*.exe",
+            Filter = "Library (*.dll)|*.dll|Executable (*.exe)|*.exe",
+            FilterIndex = isExe ? 2 : 1,
+            DefaultExt = isExe ? "exe" : "dll",
+            AddExtension = true,
             FileName = string.IsNullOrWhiteSpace(input)
-                ? "Mod_OneGamingProtected.dll"
+                ? "Protected.dll"
                 : ObfuscationEngine.CreateDefaultOutputPath(input)
         };
 
@@ -94,39 +98,10 @@ public partial class MainWindow : Window
             Log($"Output: {output}");
             Log("Protection password accepted — starting obfuscation maze.");
 
+            if (!IsDllOrExe(input))
+                throw new InvalidDataException("Choose a single .dll or .exe.");
+
             var options = ReadOptions();
-            var progress = new Progress<string>(message => Dispatcher.Invoke(() => Log(message)));
-
-            if (File.Exists(input) && options.ProtectWholeFolder)
-            {
-                var folder = Path.GetDirectoryName(input)!;
-                Log($"Whole-folder mode: protecting every managed file under {folder}");
-                input = folder;
-                output = ObfuscationEngine.CreateDefaultOutputPath(folder);
-                OutputPathBox.Text = output;
-                Log($"Output folder: {output}");
-            }
-
-            if (Directory.Exists(input))
-            {
-                var batch = await Task.Run(() => ObfuscationEngine.ProtectDirectory(input, output, options, protectionKey, progress));
-                Log($"Protected managed assemblies: {batch.ProtectedAssemblies}");
-                Log($"Copied assets/unsupported assemblies: {batch.CopiedFiles}");
-                Log($"Excluded source/debug artifacts: {batch.SkippedDevelopmentFiles}");
-                foreach (var file in batch.Files)
-                    Log($"[{file.Status}] {file.RelativePath} — {file.Details}");
-                Log($"Local batch report: {batch.ReportPath}");
-                if (!string.IsNullOrWhiteSpace(batch.UnlockVaultPath))
-                {
-                    Log($"Unlock vault (master unlocks all): {batch.UnlockVaultPath}");
-                    Log($"Per-file passwords export: {batch.PasswordsExportPath}");
-                    Log("Save UNLOCK-PASSWORDS.txt, then delete it from any shared folder.");
-                }
-                StatusText.Text = "Finished — protected folder package validated successfully.";
-                succeeded = true;
-                return;
-            }
-
             var result = await Task.Run(() => ObfuscationEngine.Protect(input, output, options, protectionKey));
             Log($"Renamed helper types: {result.RenamedTypes}");
             Log($"Renamed methods: {result.RenamedMethods}");
@@ -159,9 +134,10 @@ public partial class MainWindow : Window
                 Log($"Password export: {result.PasswordsExportPath}");
             }
             Log($"Local report: {result.ReportPath}");
+            var kind = Path.GetExtension(output).Equals(".exe", StringComparison.OrdinalIgnoreCase) ? "EXE" : "DLL";
             StatusText.Text = result.IsLocked
-                ? "Finished — offline .oglock seal applied. Unlock before the game can load it."
-                : "Finished — game-loadable protected DLL ready (code locked / obfuscated).";
+                ? "Finished. Unlock the .oglock before it can run."
+                : $"Finished. Protected {kind} is ready.";
             succeeded = true;
         }
         catch (Exception ex)
@@ -223,7 +199,7 @@ public partial class MainWindow : Window
         var dialog = new OpenFileDialog
         {
             Title = "Choose a OneGaming-protected assembly",
-            Filter = "Managed assemblies (*.dll;*.exe)|*.dll;*.exe",
+            Filter = "DLL and EXE (*.dll;*.exe)|*.dll;*.exe",
             CheckFileExists = true
         };
         if (dialog.ShowDialog(this) != true)
@@ -260,21 +236,50 @@ public partial class MainWindow : Window
 
     private void Window_DragOver(object sender, DragEventArgs e)
     {
-        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.Effects = FirstDllOrExe(e.Data) is null ? DragDropEffects.None : DragDropEffects.Copy;
         e.Handled = true;
     }
 
     private void Window_Drop(object sender, DragEventArgs e)
     {
-        if (e.Data.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
-            SetInput(files[0]);
+        var path = FirstDllOrExe(e.Data);
+        if (path is null)
+        {
+            Log("Drop a single .dll or .exe.");
+            StatusText.Text = "Only a DLL or EXE can be protected.";
+            return;
+        }
+
+        SetInput(path);
     }
 
     private void SetInput(string path)
     {
+        if (!IsDllOrExe(path))
+        {
+            Log("Only a .dll or .exe can be selected.");
+            StatusText.Text = "Only a DLL or EXE can be protected.";
+            return;
+        }
+
         InputPathBox.Text = Path.GetFullPath(path);
         OutputPathBox.Text = ObfuscationEngine.CreateDefaultOutputPath(path);
         Log($"Selected: {path}");
+    }
+
+    private static string? FirstDllOrExe(IDataObject data)
+    {
+        if (data.GetData(DataFormats.FileDrop) is not string[] files)
+            return null;
+        return files.FirstOrDefault(IsDllOrExe);
+    }
+
+    private static bool IsDllOrExe(string path)
+    {
+        var extension = Path.GetExtension(path);
+        return File.Exists(path) &&
+               (extension.Equals(".dll", StringComparison.OrdinalIgnoreCase) ||
+                extension.Equals(".exe", StringComparison.OrdinalIgnoreCase));
     }
 
     private ObfuscationOptions ReadOptions() => new(
@@ -290,7 +295,7 @@ public partial class MainWindow : Window
         ProtectEmbeddedResources: ProtectResourcesBox.IsChecked == true,
         RuntimeObfuscation: RuntimeObfuscationBox.IsChecked == true,
         HardenMetadataAndPe: MetadataPeBox.IsChecked == true,
-        ProtectWholeFolder: ProtectFolderBox.IsChecked == true,
+        ProtectWholeFolder: false,
         AllowOverwrite: OverwriteBox.IsChecked == true,
         MultilayerHardening: MultilayerBox.IsChecked == true,
         LockOutputs: LockOutputsBox.IsChecked == true);
@@ -318,7 +323,6 @@ public partial class MainWindow : Window
         ProtectResourcesBox.IsChecked = options.ProtectEmbeddedResources;
         RuntimeObfuscationBox.IsChecked = options.RuntimeObfuscation;
         MetadataPeBox.IsChecked = options.HardenMetadataAndPe;
-        ProtectFolderBox.IsChecked = options.ProtectWholeFolder;
         OverwriteBox.IsChecked = options.AllowOverwrite;
         MultilayerBox.IsChecked = options.MultilayerHardening;
         LockOutputsBox.IsChecked = options.LockOutputs;
@@ -466,7 +470,7 @@ public partial class MainWindow : Window
         var confirm = GetConfirmKey();
         if (key.Length == 0)
         {
-            KeyStrengthText.Text = "Password required to obfuscate (16+ chars). Enter it twice, or click Generate.";
+            KeyStrengthText.Text = "Enter a password twice, or click Generate. 16 characters minimum.";
             return;
         }
 
