@@ -13,7 +13,6 @@ public static class ConstantStringFieldProtection
         var decoder = CreateDecoder(module);
         var cctor = EnsureStaticConstructor(module.GlobalType);
         var insertAt = Math.Max(0, cctor.Body.Instructions.Count - 1);
-        var blobOrdinal = 0;
         var converted = 0;
 
         foreach (var type in module.GetTypes().Where(type => !type.IsGlobalModuleType && !type.IsEnum).ToArray())
@@ -44,7 +43,7 @@ public static class ConstantStringFieldProtection
                 field.Constant = null;
 
                 var seed = RandomNumberGenerator.GetInt32(1, int.MaxValue);
-                var blob = CreateBlobField(module, blobOrdinal++);
+                var blob = CreateBlobField(module);
                 EmitBlobInitializer(cctor, blob, Encrypt(value, seed), ref insertAt);
                 EmitFieldAssignment(cctor, field, blob, seed, decoder, ref insertAt);
                 converted++;
@@ -109,10 +108,10 @@ public static class ConstantStringFieldProtection
         insertAt += batch.Count;
     }
 
-    private static FieldDef CreateBlobField(ModuleDef module, int ordinal)
+    private static FieldDef CreateBlobField(ModuleDef module)
     {
         var field = new FieldDefUser(
-            "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(10)).ToLowerInvariant() + ordinal.ToString("x"),
+            InvisibleNames.Next(),
             new FieldSig(new SZArraySig(module.CorLibTypes.Byte)),
             FieldAttributes.Assembly | FieldAttributes.Static);
         module.GlobalType.Fields.Add(field);
@@ -163,7 +162,7 @@ public static class ConstantStringFieldProtection
     {
         var byteArray = new SZArraySig(module.CorLibTypes.Byte);
         var method = new MethodDefUser(
-            "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant(),
+            InvisibleNames.Next(),
             MethodSig.CreateStatic(module.CorLibTypes.String, byteArray, module.CorLibTypes.Int32),
             MethodImplAttributes.IL | MethodImplAttributes.Managed,
             MethodAttributes.Assembly | MethodAttributes.Static | MethodAttributes.HideBySig)

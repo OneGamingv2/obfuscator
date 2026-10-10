@@ -1,3 +1,4 @@
+using dnlib.DotNet;
 using OneGamingOBFUSCATION.Core;
 using OneGamingOBFUSCATION.Protection;
 using System.IO;
@@ -50,12 +51,44 @@ public sealed class ProtectAndExecuteTests
             Assert.Matches(@"virtualized=[1-9]", customMethods);
             Assert.Contains(result.Diagnostics, line => line.StartsWith("Embedded resources:", StringComparison.Ordinal));
             Assert.Contains("Lock protected outputs: False", File.ReadAllText(result.ReportPath));
+            Assert.Contains(result.Diagnostics, line => line.StartsWith("dnSpy storage:", StringComparison.Ordinal));
 
             Assert.True(KeyedIntegrityProtection.Verify(output, result.IntegrityManifestPath, ProtectionKey));
             Assert.False(KeyedIntegrityProtection.Verify(output, result.IntegrityManifestPath, "wrong-key-wrong-key"));
 
+            using (var mono = ModuleDefMD.Load(output, new ModuleCreationOptions(CLRRuntimeReaderKind.Mono)))
+            {
+                Assert.Equal("SampleMod", mono.Assembly?.Name);
+                Assert.EndsWith(".cpp", mono.Name, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains(mono.GetTypes(), type => type.FullName == "SampleMod.Plugin");
+                Assert.Contains(mono.GetTypes(), type => type.FullName == "SampleMod.Harness" && type.Methods.Any(method => method.Name == "GetMessage"));
+                Assert.Contains(mono.GetTypes().SelectMany(type => type.Methods), method => method.Name.String.Contains('\u202E'));
+                Assert.Contains(result.Diagnostics, line => line.StartsWith("Invisible names:", StringComparison.Ordinal));
+            }
+
+            string? clrAssemblyName = null;
+            try
+            {
+                using var clr = ModuleDefMD.Load(output);
+                clrAssemblyName = clr.Assembly?.Name;
+            }
+            catch (BadImageFormatException)
+            {
+            }
+
+            Assert.NotEqual("SampleMod", clrAssemblyName);
+            Assert.Throws<BadImageFormatException>(() =>
+            {
+                var rejected = new AssemblyLoadContext("disguised-sample", isCollectible: true);
+                rejected.LoadFromAssemblyPath(output);
+            });
+
+            var runnable = Path.Combine(outputDirectory, "SampleMod.Runnable.dll");
+            File.Copy(output, runnable, overwrite: true);
+            DnSpyStorageDisguise.Remove(runnable);
+
             context = new AssemblyLoadContext("protected-sample", isCollectible: true);
-            var assembly = context.LoadFromAssemblyPath(output);
+            var assembly = context.LoadFromAssemblyPath(runnable);
 
             Assert.NotNull(assembly.GetType("SampleMod.Plugin"));
             Assert.NotNull(assembly.GetType("SampleMod.Plugin")!.GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic));

@@ -172,7 +172,7 @@ public static class CustomMethodProtection
         if (proxies.TryGetValue(real, out var existing))
             return existing;
 
-        var proxy = CreateMethod(kit.Carrier, "_" + Token(), real.MethodSig);
+        var proxy = CreateMethod(kit.Carrier, Token(), real.MethodSig);
         EmitLoadArgs(proxy);
         proxy.Body.Instructions.Add(Instruction.Create(OpCodes.Call, real));
         proxy.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
@@ -263,7 +263,7 @@ public static class CustomMethodProtection
 
     private static MethodDef CreateConstantMethod(Kit kit, int value)
     {
-        var method = CreateMethod(kit.Carrier, "_" + Token(), MethodSig.CreateStatic(kit.Carrier.Module.CorLibTypes.Int32));
+        var method = CreateMethod(kit.Carrier, Token(), MethodSig.CreateStatic(kit.Carrier.Module.CorLibTypes.Int32));
         var local = new Local(kit.Carrier.Module.CorLibTypes.Int32);
         method.Body.Variables.Add(local);
         var real = Instruction.Create(OpCodes.Nop);
@@ -373,7 +373,7 @@ public static class CustomMethodProtection
     private static MethodDef CreateUnary(Kit kit, Action<IList<Instruction>, int> emit)
     {
         var module = kit.Carrier.Module;
-        var method = CreateMethod(kit.Carrier, "_" + Token(), MethodSig.CreateStatic(module.CorLibTypes.Int32, module.CorLibTypes.Int32));
+        var method = CreateMethod(kit.Carrier, Token(), MethodSig.CreateStatic(module.CorLibTypes.Int32, module.CorLibTypes.Int32));
         emit(method.Body.Instructions, RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue));
         method.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
         return method;
@@ -384,7 +384,7 @@ public static class CustomMethodProtection
         var module = kit.Carrier.Module;
         var method = CreateMethod(
             kit.Carrier,
-            "_" + Token(),
+            Token(),
             MethodSig.CreateStatic(module.CorLibTypes.Int32, module.CorLibTypes.Int32, module.CorLibTypes.Int32));
         emit(method.Body.Instructions, RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue));
         method.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
@@ -394,7 +394,7 @@ public static class CustomMethodProtection
     private static MethodDef CreatePredicate(Kit kit, bool oddSquare)
     {
         var module = kit.Carrier.Module;
-        var method = CreateMethod(kit.Carrier, "_" + Token(), MethodSig.CreateStatic(module.CorLibTypes.Boolean, module.CorLibTypes.Int32));
+        var method = CreateMethod(kit.Carrier, Token(), MethodSig.CreateStatic(module.CorLibTypes.Boolean, module.CorLibTypes.Int32));
         var body = method.Body.Instructions;
         if (oddSquare)
         {
@@ -641,7 +641,7 @@ public static class CustomMethodProtection
         var attributes = TypeAttributes.NotPublic | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
         if (abstractSealed)
             attributes |= TypeAttributes.Abstract;
-        return new TypeDefUser("_" + Token(), "_" + Token(), baseType)
+        return new TypeDefUser(Token(), Token(), baseType)
         {
             Attributes = attributes
         };
@@ -680,7 +680,7 @@ public static class CustomMethodProtection
         }
     }
 
-    private static string Token() => Convert.ToHexString(RandomNumberGenerator.GetBytes(8)).ToLowerInvariant();
+    private static string Token() => InvisibleNames.Next();
 
     private sealed class Kit
     {

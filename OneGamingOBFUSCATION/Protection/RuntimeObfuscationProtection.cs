@@ -24,7 +24,7 @@ public static class RuntimeObfuscationProtection
         for (var index = 0; index < count; index++)
         {
             var type = new TypeDefUser(
-                "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(3)).ToLowerInvariant(),
+                InvisibleNames.Next(),
                 CreateRuntimeName(),
                 module.CorLibTypes.Object.TypeDefOrRef)
             {
@@ -38,10 +38,10 @@ public static class RuntimeObfuscationProtection
                            suffixes[RandomNumberGenerator.GetInt32(suffixes.Length)];
             foreach (var (name, value) in new[]
                      {
-                         ("_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(4)).ToLowerInvariant(), fakeGuid),
-                         ("_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(4)).ToLowerInvariant(),
+                         (InvisibleNames.Next(), fakeGuid),
+                         (InvisibleNames.Next(),
                              "Mod" + RandomNumberGenerator.GetInt32(1000, 9999)),
-                         ("_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(4)).ToLowerInvariant(),
+                         (InvisibleNames.Next(),
                              "1." + RandomNumberGenerator.GetInt32(0, 9) + "." + RandomNumberGenerator.GetInt32(0, 20))
                      })
             {
@@ -66,7 +66,7 @@ public static class RuntimeObfuscationProtection
         for (var index = 0; index < count; index++)
         {
             var type = new TypeDefUser(
-                "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(4)).ToLowerInvariant(),
+                InvisibleNames.Next(),
                 CreateRuntimeName(),
                 module.CorLibTypes.Object.TypeDefOrRef)
             {
@@ -156,6 +156,5 @@ public static class RuntimeObfuscationProtection
             cctor.Body.Instructions.Insert(insertAt + index, batch[index]);
     }
 
-    private static string CreateRuntimeName() =>
-        "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant();
+    private static string CreateRuntimeName() => InvisibleNames.Next();
 }

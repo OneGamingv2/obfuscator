@@ -758,6 +758,5 @@ public static class Int32Virtualization
         body.Add(Instruction.Create(OpCodes.Stloc, local));
     }
 
-    private static string CreateRuntimeName() =>
-        "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant();
+    private static string CreateRuntimeName() => InvisibleNames.Next();
 }

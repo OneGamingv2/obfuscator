@@ -1,6 +1,4 @@
 using dnlib.DotNet;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace OneGamingOBFUSCATION.Protection;
 
@@ -129,6 +127,81 @@ public static class SafeRenamer
         return new RenameResult(types, methods, fields, parameters, properties, events, accessors, genericParameters);
     }
 
+    public static int HideSyntheticMembers(ModuleDef module)
+    {
+        var memberReferences = CaptureMemberReferences(module);
+        var typeReferences = CaptureTypeReferences(module);
+        var usedNames = new HashSet<string>(StringComparer.Ordinal);
+        var hidden = 0;
+
+        foreach (var type in module.GetTypes().ToArray())
+        {
+            if (!type.IsGlobalModuleType && IsSynthetic(type.Namespace))
+            {
+                type.Namespace = InvisibleNames.Next(usedNames);
+                hidden++;
+            }
+
+            if (!type.IsGlobalModuleType && IsSynthetic(type.Name))
+            {
+                type.Name = InvisibleNames.Next(usedNames);
+                hidden++;
+            }
+
+            foreach (var method in type.Methods)
+            {
+                if (method.IsRuntimeSpecialName || method.Name == ".ctor" || method.Name == ".cctor")
+                    continue;
+                if (!IsSynthetic(method.Name))
+                    continue;
+                method.Name = InvisibleNames.Next(usedNames);
+                hidden++;
+            }
+
+            foreach (var field in type.Fields)
+            {
+                if (!IsSynthetic(field.Name))
+                    continue;
+                field.Name = InvisibleNames.Next(usedNames);
+                hidden++;
+            }
+
+            foreach (var property in type.Properties)
+            {
+                if (!IsSynthetic(property.Name))
+                    continue;
+                property.Name = InvisibleNames.Next(usedNames);
+                hidden++;
+            }
+
+            foreach (var @event in type.Events)
+            {
+                if (!IsSynthetic(@event.Name))
+                    continue;
+                @event.Name = InvisibleNames.Next(usedNames);
+                hidden++;
+            }
+        }
+
+        UpdateReferences(memberReferences, typeReferences);
+        return hidden;
+    }
+
+    private static bool IsSynthetic(string? name)
+    {
+        if (string.IsNullOrEmpty(name) || name[0] != '_' || name.Length < 7)
+            return false;
+        for (var index = 1; index < name.Length; index++)
+        {
+            var character = name[index];
+            var hex = character is >= '0' and <= '9' or >= 'a' and <= 'f';
+            if (!hex)
+                return false;
+        }
+
+        return true;
+    }
+
     private static List<(MemberRef Reference, IMemberDef Definition)> CaptureMemberReferences(ModuleDef module)
     {
         var captured = new List<(MemberRef, IMemberDef)>();
@@ -249,18 +322,8 @@ public static class SafeRenamer
 
     private static string CreateName(string prefix, string identity, HashSet<string> usedNames)
     {
-        string candidate;
-        do
-        {
-            var salt = RandomNumberGenerator.GetBytes(16);
-            var identityBytes = Encoding.UTF8.GetBytes(prefix + ":" + identity);
-            var material = new byte[salt.Length + identityBytes.Length];
-            salt.CopyTo(material, 0);
-            identityBytes.CopyTo(material, salt.Length);
-            var digest = Convert.ToHexString(SHA256.HashData(material)).ToLowerInvariant();
-            candidate = "_" + digest[..18];
-        } while (!usedNames.Add(candidate));
-
-        return candidate;
+        _ = prefix;
+        _ = identity;
+        return InvisibleNames.Next(usedNames);
     }
 }

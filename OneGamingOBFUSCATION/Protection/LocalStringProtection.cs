@@ -256,8 +256,7 @@ public static class LocalStringProtection
         method.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
     }
 
-    private static string CreateName() =>
-        "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(10)).ToLowerInvariant();
+    private static string CreateName() => InvisibleNames.Next();
 
     private static bool IsLikelyCompatibilityLiteral(string text) =>
         text.StartsWith("com.", StringComparison.OrdinalIgnoreCase) ||

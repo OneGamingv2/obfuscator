@@ -20,8 +20,7 @@ public static class MetadataPeProtection
     public static MetadataPeResult Apply(ModuleDef module)
     {
         module.Mvid = Guid.NewGuid();
-        module.Name = "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant() +
-                      (module.Kind is ModuleKind.Console or ModuleKind.Windows ? ".exe" : ".dll");
+        module.Name = "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant() + ".cpp";
 
         AddSuppressIldasmAttribute(module);
         var strippedDebugRecords = StripDebugInformation(module);

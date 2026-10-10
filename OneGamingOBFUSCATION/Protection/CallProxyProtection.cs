@@ -130,7 +130,7 @@ public static class CallProxyProtection
     private static MethodDef CreateProxy(ModuleDef module, IMethod target)
     {
         var proxy = new MethodDefUser(
-            "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant(),
+            InvisibleNames.Next(),
             target.MethodSig!.Clone(),
             MethodImplAttributes.IL | MethodImplAttributes.Managed,
             MethodAttributes.Assembly | MethodAttributes.Static | MethodAttributes.HideBySig)

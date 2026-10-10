@@ -422,6 +422,10 @@ public static class ObfuscationEngine
             diagnostics.Add($"Runtime obfuscation: applied={stats.Applied}/{stats.Candidates}; skips: {stats.FormatSkipSummary()}");
         }
 
+        var hiddenNames = SafeRenamer.HideSyntheticMembers(module);
+        if (options.RenamePrivateMembers || hiddenNames > 0)
+            diagnostics.Add($"Invisible names: zero-width and bidi marks on renamed identifiers; hid {hiddenNames} leftover synthetic names. A decompiler dump shows blank names.");
+
         if (options.HardenMetadataAndPe)
             metadataPeResult = MetadataPeProtection.Apply(module);
 
@@ -445,7 +449,18 @@ public static class ObfuscationEngine
                 MetadataPeProtection.ConfigureWriter(writerOptions);
             module.Write(temporaryPath, writerOptions);
 
-            using (var validationModule = ModuleDefMD.Load(temporaryPath))
+            if (options.HardenMetadataAndPe)
+            {
+                DnSpyStorageDisguise.Apply(temporaryPath);
+                diagnostics.Add("dnSpy storage: metadata flags=0x11, #~ ExtraData set, COR20 flags include 0x11, module renamed to .cpp. dnSpy's CLR reader misparses it; open with the Mono metadata reader. Gorilla Tag ignores both bits.");
+            }
+
+            var validationOptions = options.HardenMetadataAndPe
+                ? new ModuleCreationOptions(CLRRuntimeReaderKind.Mono)
+                : null;
+            using (var validationModule = validationOptions is null
+                       ? ModuleDefMD.Load(temporaryPath)
+                       : ModuleDefMD.Load(temporaryPath, validationOptions))
             {
                 if (validationModule.Assembly is null)
                     throw new InvalidDataException("The generated file did not contain a valid managed assembly.");

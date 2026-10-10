@@ -148,8 +148,7 @@ public static class MultilayerNoiseProtection
         return mutated;
     }
 
-    private static string CreateName() =>
-        "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant();
+    private static string CreateName() => InvisibleNames.Next();
 
     private static MethodDef EnsureStaticConstructor(TypeDef type)
     {

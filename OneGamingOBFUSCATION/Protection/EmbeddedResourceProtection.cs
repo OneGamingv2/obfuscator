@@ -51,7 +51,7 @@ public static class EmbeddedResourceProtection
 
             var seed = RandomNumberGenerator.GetInt32(1, int.MaxValue);
             var encrypted = Encrypt(plain, seed);
-            var newName = "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(14)).ToLowerInvariant();
+            var newName = InvisibleNames.Next();
             module.Resources[module.Resources.IndexOf(resource)] =
                 new EmbeddedResource(newName, encrypted, embedded.Attributes);
             entries.Add(new ResourceEntry(originalName, newName, seed));
@@ -400,8 +400,7 @@ public static class EmbeddedResourceProtection
         return bytes;
     }
 
-    private static string CreateRuntimeName() =>
-        "_" + Convert.ToHexString(RandomNumberGenerator.GetBytes(12)).ToLowerInvariant();
+    private static string CreateRuntimeName() => InvisibleNames.Next();
 
     private sealed record ResourceEntry(string OriginalName, string NewName, int Seed);
 }

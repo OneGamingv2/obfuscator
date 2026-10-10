@@ -31,7 +31,7 @@ A fully local, layered IL obfuscator for managed Gorilla Tag, Unity, BepInEx, an
 - Control-flow maze for eligible helper methods.
 - Per-instruction state weaving for eligible straight-line methods; multilayer adds dense MBA junk before each IL op (“every line” noise).
 - Namespace scattering for compatibility-safe internal helper types.
-- Non-deterministic identifier names so separate protection runs do not produce the same symbol map.
+- Renamed identifiers are unique zero-width, blank, and bidirectional marks. A decompiler dump shows empty names and the exported project is not valid C#. Unity callbacks, BepInEx identity, and Harmony patch names stay readable.
 - Coverage diagnostics in the UI log and `.report.txt` explain applied counts and top skip reasons.
 
 Nothing is “AI-proof.” Stronger multilayer transforms raise the cost of automated cleanup; a determined reverse engineer with a debugger can still recover behavior. BepInPlugin attribute string arguments remain plaintext so BepInEx can load plugins.
@@ -40,7 +40,8 @@ Anti-dump / single-use-in-game / runtime kill-switches are intentionally not inc
 
 ## Metadata and PE hardening
 
-- Randomized managed module name and Module Version ID (MVID) on every output.
+- Randomized managed module name (`.cpp`, so dnSpy's module list looks like C++) and Module Version ID (MVID) on every output.
+- Metadata storage flags are set to `0x11`, the `#~` heap flags include ExtraData, and the COR20 flags include `0x11` (IL-only plus the native-entry bit, with the entry still 0). dnSpy's default CLR reader shifts the tables and shows a fake assembly instead of the real methods. Gorilla Tag's Mono loader skips the storage flags and the ExtraData bit, and it does not treat `0x10` as a native entry, so the game still loads the DLL. In dnSpy, switch the metadata reader to Mono if you need to inspect your own output.
 - Randomized valid PE/COFF timestamp.
 - Ownership-safe metadata token reordering for types, non-virtual methods, fields, properties, and events.
 - Manifest resource visibility hardened to private where applicable.
@@ -48,7 +49,7 @@ Anti-dump / single-use-in-game / runtime kill-switches are intentionally not inc
 - A standard `SuppressIldasmAttribute` marker is added without corrupting CLR metadata.
 - Assembly identity, runtime-critical PE flags, method signatures, resources, and loader-critical headers remain valid.
 
-The tool deliberately does not create malformed metadata tables, invalid PE sections, executable packer stubs, or fake headers. Those techniques often break Mono/Unity, raise antivirus detections, and do not prevent a determined runtime debugger.
+The storage-flag and ExtraData bits above are the only metadata values written off the normal CLR layout. Tables, PE sections, and method bodies stay structurally valid for Mono. The tool does not add packer stubs or fake headers.
 
 ## Keyed integrity verification
 
@@ -61,7 +62,7 @@ The tool deliberately does not create malformed metadata tables, invalid PE sect
 
 - The protection key is your **master password** for integrity verification (and for the optional `.oglock` seal).
 - **Default Safe/Maximum output is a normal managed DLL** the game / BepInEx can load immediately.
-- “Code lock” means the IL layers (rename, encrypted strings, MBA integers, proxy chains, control-flow maze, weave, decoys, metadata hardening). dnSpy can still *open* a valid PE, but the decompiled view is meant to be unreadable junk rather than your source.
+- “Code lock” means the IL layers (rename, encrypted strings, MBA integers, proxy chains, control-flow maze, weave, decoys, metadata hardening). dnSpy's default reader opens the PE but misreads it as another assembly; the Mono metadata reader is what shows the real module, and that view is meant to be unreadable junk rather than your source.
 - Optional checkbox / `--lock true` writes AES-GCM `.oglock` containers instead (not loadable until `unlock`). Use that only when you want an offline sealed package, not for in-game plugins.
 
 Nothing can make a loadable Unity/BepInEx plugin literally impossible to open in dnSpy: if the CLR can read the file, a decompiler can too. Invalid-metadata / anti-dnSpy crash tricks are intentionally not used because they break Mono/Unity and are easy to strip. Keep the master key private if you want integrity manifests to stay unforgeable.
