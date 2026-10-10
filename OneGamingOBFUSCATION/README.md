@@ -75,6 +75,20 @@ Virtualization and control-flow flattening are limited to eligible private helpe
 
 “Per instruction” refers to compiled IL, not source-code lines. Source line boundaries and comments are normally absent from a release DLL. The weaving pass surrounds every supported IL instruction in eligible methods with a state-dependent guard; methods where that could alter Unity or CLR behavior are skipped.
 
+## Team sync
+
+Download [OneGaming.bat](https://raw.githubusercontent.com/OneGamingv2/obfuscator/main/OneGaming.bat), put it in an empty folder, and double-click it. The file downloads this repo, replaces missing or changed tracked files with the GitHub copy, then opens a command menu to build and run.
+
+```text
+OneGaming.bat
+OneGaming.bat sync
+OneGaming.bat build
+OneGaming.bat rebuild
+OneGaming.bat run
+```
+
+Git and the .NET 8 SDK have to be installed. Extra files that were never committed stay where they are.
+
 ## GUI use
 
 1. Open `OneGamingOBFUSCATION.exe`.
