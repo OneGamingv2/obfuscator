@@ -943,11 +943,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
+      "projectUniqueName": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
       "projectName": "OneGamingOBFUSCATION.Tests",
-      "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
+      "projectPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\OneGamingOBFUSCATION.Tests.csproj",
       "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-      "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\obj\\",
+      "outputPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\OneGamingOBFUSCATION.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -969,11 +969,11 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
-              "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj"
+            "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
+              "projectPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj"
             },
-            "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
-              "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj"
+            "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
+              "projectPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj"
             }
           }
         }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {}
+    "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {}
   },
   "projects": {
-    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
+    "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj": {
       "version": "8.6.0",
       "restore": {
-        "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
+        "projectUniqueName": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
         "projectName": "OneGamingOBFUSCATION",
-        "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
+        "projectPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\OneGamingOBFUSCATION.csproj",
         "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-        "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\obj\\",
+        "outputPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

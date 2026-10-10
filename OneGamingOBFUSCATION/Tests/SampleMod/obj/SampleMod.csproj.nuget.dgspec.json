@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {}
+    "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {}
   },
   "projects": {
-    "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
+    "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+        "projectUniqueName": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
         "projectName": "SampleMod",
-        "projectPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+        "projectPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
         "packagesPath": "C:\\Users\\MJB\\.nuget\\packages\\",
-        "outputPath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\obj\\",
+        "outputPath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [

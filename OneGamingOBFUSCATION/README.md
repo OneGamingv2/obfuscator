@@ -92,17 +92,20 @@ Git and the .NET 8 SDK have to be installed. Extra files that were never committ
 ## GUI use
 
 1. Open `OneGamingOBFUSCATION.exe`.
-2. Drop one managed DLL or EXE onto the window, or choose **Browse**. The output keeps the same extension.
+2. Drop one managed DLL, EXE, or plugin JAR onto the window, or choose **Browse**. The page switches to match the file. The output keeps the same extension.
 3. Enter a strong protection key of at least 16 characters and store it securely.
-4. Pick a preset (**Safe**, **Maximum**, or **Rename only**) or customize layers.
+4. On the DLL or EXE page, pick a preset (**Safe**, **Maximum**, or **Rename only**) or customize layers. On the JAR page, keep the plugin main class and choose class, member, string, and debug protection.
 5. Choose a new output path and select **Protect**.
 6. Test the protected file in a private development environment before distribution.
+
+Paper, Purpur, Folia, Bukkit, Velocity, and PlaceholderAPI entry points stay, including annotated listeners. Other classes are renamed, private members are renamed, strings use a cipher chosen per build, and integer constants are mixed. No Java install is required. WinZip extracts decoy names from the jar. A protected DLL or EXE still loads, and WinZip opens a decoy archive appended after the PE.
 
 ## CLI use
 
 ```text
 OneGamingOBFUSCATION.exe protect --input Mod.dll --output Mod_Protected.dll --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe protect --input Tool.exe --output Tool_Protected.exe --key "your-16+-char-key"
+OneGamingOBFUSCATION.exe protect --input Plugin.jar --output Plugin_Protected.jar --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe unlock --input Mod_Protected.dll.oglock --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe list-passwords --vault OneGaming.unlock-vault.json --key "your-16+-char-key"
 OneGamingOBFUSCATION.exe verify --input Mod_Protected.dll --key "your-16+-char-key"

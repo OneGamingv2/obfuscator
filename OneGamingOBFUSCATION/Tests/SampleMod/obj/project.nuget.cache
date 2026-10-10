@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "d3F3FU1twCw=",
+  "dgSpecHash": "F4jUug/nAmM=",
   "success": true,
-  "projectFilePath": "e:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
+  "projectFilePath": "E:\\OLD DOCUMENTS\\obfuscator\\OneGamingOBFUSCATION\\Tests\\SampleMod\\SampleMod.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\MJB\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\MJB\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",

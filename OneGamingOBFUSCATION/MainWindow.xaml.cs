@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OneGamingOBFUSCATION;
 
@@ -16,7 +17,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Log("Ready. One DLL or EXE at a time.");
+        ShowPage("dll");
+        Log("Ready. One DLL, EXE, or plugin JAR at a time.");
         Log("CLI: OneGamingOBFUSCATION.exe protect --input <path> --key <key>");
         StateChanged += (_, _) => SyncChrome();
     }
@@ -53,8 +55,8 @@ public partial class MainWindow : Window
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Choose a managed DLL or EXE",
-            Filter = "DLL and EXE (*.dll;*.exe)|*.dll;*.exe|Executable (*.exe)|*.exe|Library (*.dll)|*.dll",
+            Title = "Choose a DLL, EXE, or plugin JAR",
+            Filter = "DLL, EXE, and JAR (*.dll;*.exe;*.jar)|*.dll;*.exe;*.jar|Library (*.dll)|*.dll|Executable (*.exe)|*.exe|Plugin JAR (*.jar)|*.jar",
             CheckFileExists = true
         };
 
@@ -67,12 +69,15 @@ public partial class MainWindow : Window
         var input = InputPathBox.Text.Trim();
         var extension = Path.GetExtension(input);
         var isExe = extension.Equals(".exe", StringComparison.OrdinalIgnoreCase);
+        var isJar = extension.Equals(".jar", StringComparison.OrdinalIgnoreCase);
         var dialog = new SaveFileDialog
         {
             Title = "Choose a new output file",
-            Filter = "Library (*.dll)|*.dll|Executable (*.exe)|*.exe",
-            FilterIndex = isExe ? 2 : 1,
-            DefaultExt = isExe ? "exe" : "dll",
+            Filter = isJar
+                ? "Plugin JAR (*.jar)|*.jar"
+                : "Library (*.dll)|*.dll|Executable (*.exe)|*.exe",
+            FilterIndex = isJar || !isExe ? 1 : 2,
+            DefaultExt = isJar ? "jar" : isExe ? "exe" : "dll",
             AddExtension = true,
             FileName = string.IsNullOrWhiteSpace(input)
                 ? "Protected.dll"
@@ -98,8 +103,31 @@ public partial class MainWindow : Window
             Log($"Output: {output}");
             Log("Protection password accepted — starting obfuscation maze.");
 
+            if (IsJar(input))
+            {
+                if (!output.EndsWith(".jar", StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidDataException("Jar output has to end with .jar.");
+                var jarOptions = new JarProtectOptions(
+                    JarRenameClassesBox.IsChecked == true,
+                    JarRenameMembersBox.IsChecked == true,
+                    JarStringsBox.IsChecked == true,
+                    JarStripDebugBox.IsChecked == true,
+                    JarShuffleBox.IsChecked == true,
+                    OverwriteBox.IsChecked == true,
+                    JarNumbersBox.IsChecked == true,
+                    JarArchiveBox.IsChecked == true);
+                var jar = await Task.Run(() => JarPluginObfuscator.Protect(input, output, jarOptions, protectionKey));
+                foreach (var note in jar.Notes)
+                    Log(note);
+                Log($"SHA-256: {jar.Sha256}");
+                Log($"Keyed integrity manifest: {jar.ManifestPath}");
+                StatusText.Text = "Finished. Protected JAR is ready.";
+                succeeded = true;
+                return;
+            }
+
             if (!IsDllOrExe(input))
-                throw new InvalidDataException("Choose a single .dll or .exe.");
+                throw new InvalidDataException("Choose a single .dll, .exe, or .jar.");
 
             var options = ReadOptions();
             var result = await Task.Run(() => ObfuscationEngine.Protect(input, output, options, protectionKey));
@@ -199,7 +227,7 @@ public partial class MainWindow : Window
         var dialog = new OpenFileDialog
         {
             Title = "Choose a OneGaming-protected assembly",
-            Filter = "DLL and EXE (*.dll;*.exe)|*.dll;*.exe",
+            Filter = "DLL, EXE, and JAR (*.dll;*.exe;*.jar)|*.dll;*.exe;*.jar",
             CheckFileExists = true
         };
         if (dialog.ShowDialog(this) != true)
@@ -236,17 +264,17 @@ public partial class MainWindow : Window
 
     private void Window_DragOver(object sender, DragEventArgs e)
     {
-        e.Effects = FirstDllOrExe(e.Data) is null ? DragDropEffects.None : DragDropEffects.Copy;
+        e.Effects = FirstSupported(e.Data) is null ? DragDropEffects.None : DragDropEffects.Copy;
         e.Handled = true;
     }
 
     private void Window_Drop(object sender, DragEventArgs e)
     {
-        var path = FirstDllOrExe(e.Data);
+        var path = FirstSupported(e.Data);
         if (path is null)
         {
-            Log("Drop a single .dll or .exe.");
-            StatusText.Text = "Only a DLL or EXE can be protected.";
+            Log("Drop a single .dll, .exe, or .jar.");
+            StatusText.Text = "Only a DLL, EXE, or plugin JAR can be protected.";
             return;
         }
 
@@ -255,24 +283,88 @@ public partial class MainWindow : Window
 
     private void SetInput(string path)
     {
-        if (!IsDllOrExe(path))
+        if (!IsSupported(path))
         {
-            Log("Only a .dll or .exe can be selected.");
-            StatusText.Text = "Only a DLL or EXE can be protected.";
+            Log("Only a .dll, .exe, or .jar can be selected.");
+            StatusText.Text = "Only a DLL, EXE, or plugin JAR can be protected.";
             return;
         }
 
         InputPathBox.Text = Path.GetFullPath(path);
         OutputPathBox.Text = ObfuscationEngine.CreateDefaultOutputPath(path);
+        var extension = Path.GetExtension(path);
+        if (extension.Equals(".jar", StringComparison.OrdinalIgnoreCase))
+        {
+            ShowPage("jar");
+            FileKindText.Text = "JAR";
+            try
+            {
+                var scan = JarPluginObfuscator.Scan(path);
+                var plugin = string.IsNullOrWhiteSpace(scan.PluginName) ? "unnamed plugin" : scan.PluginName;
+                JarDetectedText.Text = scan.MainClass is null
+                    ? $"{scan.Server}. {plugin}."
+                    : $"{scan.Server}. {plugin}. Main {scan.MainClass}.";
+                Log(scan.Summary);
+            }
+            catch (Exception ex)
+            {
+                JarDetectedText.Text = "This JAR could not be scanned as a plugin.";
+                Log(ex.Message);
+            }
+        }
+        else if (extension.Equals(".exe", StringComparison.OrdinalIgnoreCase))
+        {
+            ShowPage("exe");
+            FileKindText.Text = "EXE";
+        }
+        else
+        {
+            ShowPage("dll");
+            FileKindText.Text = "DLL";
+        }
+
         Log($"Selected: {path}");
+        StatusText.Text = $"Ready to protect this {FileKindText.Text}.";
     }
 
-    private static string? FirstDllOrExe(IDataObject data)
+    private void ShowDllPage_Click(object sender, RoutedEventArgs e) => ShowPage("dll");
+
+    private void ShowExePage_Click(object sender, RoutedEventArgs e) => ShowPage("exe");
+
+    private void ShowJarPage_Click(object sender, RoutedEventArgs e) => ShowPage("jar");
+
+    private void ShowPage(string page)
+    {
+        var jar = page == "jar";
+        var exe = page == "exe";
+        DotNetPage.Visibility = jar ? Visibility.Collapsed : Visibility.Visible;
+        JarPage.Visibility = jar ? Visibility.Visible : Visibility.Collapsed;
+        DllNote.Visibility = exe || jar ? Visibility.Collapsed : Visibility.Visible;
+        ExeNote.Visibility = exe ? Visibility.Visible : Visibility.Collapsed;
+        DotNetPageTitle.Text = exe ? "EXE page" : "DLL page";
+        PaintPage(DllPageButton, page == "dll");
+        PaintPage(ExePageButton, exe);
+        PaintPage(JarPageButton, jar);
+    }
+
+    private void PaintPage(Button button, bool selected)
+    {
+        button.Background = selected ? (Brush)FindResource("AccentBrush") : Brushes.White;
+        button.Foreground = selected ? Brushes.White : (Brush)FindResource("TextBrush");
+        button.BorderBrush = selected ? (Brush)FindResource("AccentBrush") : (Brush)FindResource("LineBrush");
+    }
+
+    private static string? FirstSupported(IDataObject data)
     {
         if (data.GetData(DataFormats.FileDrop) is not string[] files)
             return null;
-        return files.FirstOrDefault(IsDllOrExe);
+        return files.FirstOrDefault(IsSupported);
     }
+
+    private static bool IsSupported(string path) => IsDllOrExe(path) || IsJar(path);
+
+    private static bool IsJar(string path) =>
+        File.Exists(path) && Path.GetExtension(path).Equals(".jar", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsDllOrExe(string path)
     {

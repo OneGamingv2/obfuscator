@@ -53,6 +53,8 @@ public sealed class ProtectAndExecuteTests
             Assert.Contains(result.Diagnostics, line => line.StartsWith("Embedded resources:", StringComparison.Ordinal));
             Assert.Contains("Lock protected outputs: False", File.ReadAllText(result.ReportPath));
             Assert.Contains(result.Diagnostics, line => line.StartsWith("dnSpy storage:", StringComparison.Ordinal));
+            Assert.Contains(result.Diagnostics, line => line.StartsWith("WinZip dump:", StringComparison.Ordinal));
+            Assert.True(ArchiveDumpBreak.HasDecoyMarker(output));
 
             Assert.True(KeyedIntegrityProtection.Verify(output, result.IntegrityManifestPath, ProtectionKey));
             Assert.False(KeyedIntegrityProtection.Verify(output, result.IntegrityManifestPath, "wrong-key-wrong-key"));

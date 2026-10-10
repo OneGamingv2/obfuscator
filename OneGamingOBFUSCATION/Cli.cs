@@ -48,6 +48,23 @@ public static class Cli
 
         protection = ApplyFlagOverrides(protection, options);
 
+        if (File.Exists(input) && input.EndsWith(".jar", StringComparison.OrdinalIgnoreCase))
+        {
+            var jar = JarPluginObfuscator.Protect(input, output, new JarProtectOptions(
+                RenameClasses: true,
+                RenameMembers: true,
+                EncryptStrings: true,
+                StripDebug: true,
+                ShuffleEntries: true,
+                AllowOverwrite: protection.AllowOverwrite), key);
+            Console.WriteLine($"Protected jar: {output}");
+            Console.WriteLine(jar.Notes[0]);
+            foreach (var note in jar.Notes.Skip(1))
+                Console.WriteLine(note);
+            Console.WriteLine($"SHA-256: {jar.Sha256}");
+            return 0;
+        }
+
         if (File.Exists(input) && (protection.ProtectWholeFolder || ParseBool(options.GetValueOrDefault("folder") ?? "false")))
         {
             var folder = Path.GetDirectoryName(Path.GetFullPath(input))!;
@@ -233,6 +250,8 @@ public static class Cli
                     [--resources true|false] [--runtime true|false] [--folder true|false] [--overwrite true|false]
                     [--rename true|false] [--rename-types true|false] [--aggressive true|false]
                     [--metadata true|false] [--multilayer true|false] [--lock true|false]
+
+            A .jar input is protected as a Paper, Purpur, Folia, or Bukkit plugin.
 
             unlock  --input <file.oglock> [--output <file.dll-or-exe>] (--key <master-or-file-password> | --key-env <VAR>)
                     [--vault <OneGaming.unlock-vault.json>]

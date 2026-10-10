@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="OneGaming Obfuscation"
-        Height="760" Width="980"
-        MinHeight="640" MinWidth="860"
+        Height="820" Width="1080"
+        MinHeight="680" MinWidth="940"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="CanResize"
@@ -35,6 +35,31 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="#2A4D73" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PageButton" TargetType="Button">
+            <Setter Property="MinWidth" Value="88" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Background" Value="#FFFFFF" />
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="12,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -107,8 +132,11 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Style="{StaticResource HintText}" Margin="0,0,0,12"
-                           Text="Protect one managed DLL or EXE. Drop the file anywhere on this window." />
+                <DockPanel Grid.Row="0" Margin="0,0,0,12" LastChildFill="True">
+                    <TextBlock x:Name="FileKindText" DockPanel.Dock="Right" Style="{StaticResource HintText}" VerticalAlignment="Center" Text="No file yet" />
+                    <TextBlock Style="{StaticResource HintText}" VerticalAlignment="Center"
+                               Text="Drop a DLL, EXE, or plugin JAR. The page follows the file." />
+                </DockPanel>
 
                 <Border Grid.Row="1" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="16">
                     <Grid>
@@ -185,8 +213,20 @@
                         <Rectangle Grid.Column="1" Width="1" HorizontalAlignment="Center" Fill="{StaticResource LineBrush}" />
 
                         <Border Grid.Column="2" Background="{StaticResource SideBrush}" Padding="12,0,0,0">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel>
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,12">
+                                    <Button x:Name="DllPageButton" Content="DLL" Style="{StaticResource PageButton}" Click="ShowDllPage_Click" />
+                                    <Button x:Name="ExePageButton" Content="EXE" Style="{StaticResource PageButton}" Click="ShowExePage_Click" />
+                                    <Button x:Name="JarPageButton" Content="JAR" Style="{StaticResource PageButton}" Click="ShowJarPage_Click" />
+                                </StackPanel>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <Grid>
+                                        <StackPanel x:Name="DotNetPage">
+                                    <TextBlock x:Name="DotNetPageTitle" Text="DLL page" Style="{StaticResource SectionLabel}" />
+                                    <TextBlock x:Name="DllNote" Style="{StaticResource HintText}" Margin="0,0,0,10"
+                                               Text="Managed library. Unity, BepInEx, and Harmony names stay readable. WinZip opens a decoy archive after the file." />
+                                    <TextBlock x:Name="ExeNote" Style="{StaticResource HintText}" Margin="0,0,0,10" Visibility="Collapsed"
+                                               Text="Managed executable. The entry point stays in place. WinZip opens a decoy archive after the file." />
                                     <TextBlock Text="Preset" Style="{StaticResource SectionLabel}" />
                                     <ComboBox x:Name="PresetBox" SelectionChanged="PresetBox_SelectionChanged">
                                         <ComboBoxItem Content="Safe" IsSelected="True" Tag="safe" />
@@ -213,8 +253,25 @@
                                     <CheckBox x:Name="WeaveInstructionsBox" Content="Instruction weave" IsChecked="True" Click="LayerCheckBox_Click" />
                                     <CheckBox x:Name="MultilayerBox" Content="Multilayer hardening" IsChecked="True" Click="LayerCheckBox_Click" />
                                     <CheckBox x:Name="MetadataPeBox" Content="Metadata and PE hardening" IsChecked="True" Click="LayerCheckBox_Click" />
-                                </StackPanel>
-                            </ScrollViewer>
+                                        </StackPanel>
+                                        <StackPanel x:Name="JarPage" Visibility="Collapsed">
+                                            <TextBlock Text="JAR page" Style="{StaticResource SectionLabel}" />
+                                            <TextBlock x:Name="JarDetectedText" Style="{StaticResource HintText}" Margin="0,0,0,10"
+                                                       Text="Drop a plugin JAR. Paper, Purpur, and Folia are detected from plugin.yml." />
+                                            <TextBlock Text="Plugin protection" Style="{StaticResource SectionLabel}" />
+                                            <CheckBox x:Name="JarRenameClassesBox" Content="Rename classes except the plugin main class" IsChecked="True" />
+                                            <CheckBox x:Name="JarRenameMembersBox" Content="Rename private methods and fields" IsChecked="True" />
+                                            <CheckBox x:Name="JarStringsBox" Content="Encrypt strings with a per-build cipher" IsChecked="True" />
+                                            <CheckBox x:Name="JarNumbersBox" Content="Mix integer constants" IsChecked="True" />
+                                            <CheckBox x:Name="JarStripDebugBox" Content="Strip debug and source names" IsChecked="True" />
+                                            <CheckBox x:Name="JarShuffleBox" Content="Shuffle jar entries" IsChecked="True" />
+                                            <CheckBox x:Name="JarArchiveBox" Content="Break WinZip extraction names" IsChecked="True" />
+                                            <TextBlock Style="{StaticResource HintText}" Margin="0,12,0,0"
+                                                       Text="Lifecycle, commands, annotated listeners, and the plugin main class stay. WinZip extracts decoy names; the server reads the real jar." />
+                                        </StackPanel>
+                                    </Grid>
+                                </ScrollViewer>
+                            </DockPanel>
                         </Border>
                     </Grid>
                 </Border>
@@ -234,7 +291,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="StatusText"
-                               Text="Drop a DLL or EXE."
+                               Text="Drop a DLL, EXE, or plugin JAR."
                                Style="{StaticResource HintText}" VerticalAlignment="Center" Margin="0,0,16,0" />
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button x:Name="UnlockButton" Content="Unlock" Style="{StaticResource GhostButton}"
